@@ -1,66 +1,63 @@
 #include <iostream>
 #include <fstream>
 #include <stdio.h>
+#include <string>
 
 
 using namespace std;
 
-struct Herramientas{ //////No entiendo como se usarían las estructuras
+struct Herramienta{ //////No entiendo como se usarÃ­an las estructuras
 	int numeroRegistro, cantidad, costoUnitario;
-	char nombreHerramienta [20]; //Se puede trabajar con string
+	string nombreHerramienta; //Se puede trabajar con string
 };
 
 int menu(); //Para mostrar y escanear las opciones del menu 
 
-void lectura(); //Opcion 1 -> Leer el archivo
+int lectura(Herramienta herramientas[100]); //Opcion 1 -> Leer el archivo
 ///////No imprime nada -> Como se que esa parte esta funcionando?
 
-void listarHerramientas(ifstream &Lec); //Opcion 2 -> Imprimir el archivo
+void listarHerramientas(Herramienta herramientas[100], int tam); //Opcion 2 -> Imprimir el archivo
 
-void insertarFinal(ofstream &es); //Opcion 3 -> Agregar texto al final
+void insertarFinal(Herramienta herramientas[100], int tam); //Opcion 3 -> Agregar texto al final
 ////////No funciona con espacios
 
+void eliminarHerramienta (Herramienta herramientas[100], int tam); //Opcion 4 -> Eliminar una herramienta y actualizar archivo
 
-void eliminarHerramienta (ifstream &Lec); //Opcion 4 -> Eliminar una herramienta y actualizar archivo
-
-void generarArchivo(ifstream &Lec); //Opcion 5 -> Crear archivo con valores superiores a un millon
+void generarArchivo(Herramienta herramientas[100], int tam); //Opcion 5 -> Crear archivo con valores superiores a un millon
 
 
 
 int main(){
 	
-	
-	Herramientas herramientas [100];
+	Herramienta herramientas [100];
 	ofstream Esc;
     ifstream Lec;
-    int op;
+    int op, tam;
 
-		
 	do{
-		
 	    op= menu();
-		if(op==1){
-		    lectura();
-	    }
-	
-	    else if(op==2){
-	    	listarHerramientas(Lec);
-	    }
-	
-	    else if(op==3){
-	    	insertarFinal(Esc);
-	    	listarHerramientas(Lec);
-	    }
-	
-	    else if(op==4){
-	    	eliminarHerramienta(Lec);
-	    	listarHerramientas(Lec);
-	    }
-	
-	    else if(op==5){
-		    generarArchivo(Lec);
-		    listarHerramientas(Lec); //No me imprime nada
-	    }
+	    switch(op){
+	    	case 1:
+	    		tam = lectura(herramientas);
+	    		break;
+	    	case 2:
+	    		listarHerramientas(herramientas, tam);
+	    		break;
+	    	case 3:
+	    		insertarFinal(Esc);
+	    		tam = listarHerramientas(herramientas, tam);
+	    		break;
+	    	case 4:
+	    		eliminarHerramienta(Lec);
+	    		tam = listarHerramientas(herramientas, tam);
+	    		break;
+	    	case 5:
+	    		generarArchivo(herramientas, tam);
+		    	tam = listarHerramientas(herramientas, tam); //No me imprime nada
+	    		break;
+	    	case 6:
+	    		break;
+		}
 			
 	}while(op!=6);
 	
@@ -85,49 +82,62 @@ int menu(){
 	return x;	
 }
 
-void lectura(){ //////Aqui no se debe poner ifstream &Lec? -> En que casos se debe usar?
+int lectura(Herramienta herramientas[100]){ //////Aqui no se debe poner ifstream &Lec? -> En que casos se debe usar?
     fstream archivo;
 	archivo.open("Herram.txt", ios::in);
-	
-	if(archivo.fail()){ //////En este caso que tengo varias funciones que trabajan con el archivo, igual debo poner esta instruccion en cada una?
-		cout<<"No se pudo abrir el archivo"<<endl<<endl;
-		exit(1);
-	}
-	
-	archivo.close();
-}
-
-void listarHerramientas(ifstream &Lec){
+	int i = 0;
 	
 	int registroHerramienta, cantidadHerramienta, costoUnitarioHerramienta;
     string nombreHerramienta;
     
-    Lec.open("Herram.txt", ios::in);
 	   
-	
-	if(Lec.is_open()) 
+	Herramienta herramienta;
+	if(archivo.is_open()) 
     {
         cout<<"Herramientas registradas"<<endl;
-        Lec>>registroHerramienta; /////No entiendo esta instruccion
-        while(!Lec.eof())
+        
+        while(!archivo.eof())
         {
-            Lec>>nombreHerramienta;
-            Lec>>cantidadHerramienta;
-            Lec>>costoUnitarioHerramienta;
-            cout<<"Numero de registro: "<<registroHerramienta<<endl;
-            cout<<"Nombre de la herramienta: "<<nombreHerramienta<<endl;
-            cout<<"Cantidad de la herramienta: "<<cantidadHerramienta<<endl;
-            cout<<"Costo unitario de la herramienta: "<<costoUnitarioHerramienta<<endl;
-            cout<<"---------------"<<endl;
-            Lec>>registroHerramienta;
+        	
+        	archivo>>registroHerramienta;
+        	herramientas[i].numeroRegistro = registroHerramienta;
+        	
+            archivo>>nombreHerramienta;
+            herramientas[i].nombreHerramienta = nombreHerramienta;
+            	
+            archivo>>cantidadHerramienta;
+            herramientas[i].cantidad = cantidadHerramienta;
+            
+            archivo>>costoUnitarioHerramienta;
+            herramientas[i].costoUnitario = costoUnitarioHerramienta;
+           
+            i++;
         }
-        Lec.close();
+        //archivo.close();
     }
     else 
     {
         cout<<"Error al abrir el archivo"<<endl;
     }
     system("pause");	
+	
+	/*if(archivo.fail()){ //////En este caso que tengo varias funciones que trabajan con el archivo, igual debo poner esta instruccion en cada una?
+		cout<<"No se pudo abrir el archivo"<<endl<<endl;
+		exit(1);
+	}*/
+	
+	archivo.close();
+	return i;
+}
+
+void listarHerramientas(Herramienta herramientas[100], int tam){
+	
+	for(int i =0; i < tam; i++){
+		cout<<herramientas[i].numeroRegistro<<endl;
+		cout<<herramientas[i].cantidad<<endl;
+		cout<<herramientas[i].costoUnitario<<endl;
+		cout<<herramientas[i].nombreHerramienta<<endl;
+	}
 	
 }
 
@@ -151,10 +161,10 @@ void insertarFinal(ofstream &Esc){
 	cout<<"Ingrese el costo unitario de la herramienta que desea agregar"<<endl<<endl;
 	cin>>costoUnitarioHerramienta;
 	
-	Esc<<registroHerramienta<<endl;
-	Esc<<nombreHerramienta<<endl;
-	Esc<<cantidadHerramienta<<endl;
-	Esc<<costoUnitarioHerramienta<<endl;
+	Esc<<endl<<registroHerramienta<<" ";
+	Esc<<nombreHerramienta<<" ";
+	Esc<<cantidadHerramienta<<" ";
+	Esc<<costoUnitarioHerramienta;
 	
 	Esc.close();
 }
@@ -208,39 +218,19 @@ void eliminarHerramienta(ifstream &Lec){
 	
 }
 
-void generarArchivo (ifstream &Lec){
-	
-	Lec.open("Herram.txt", ios::in);
-    ofstream nuevoArchivo("sal.txt", ios::out);
-    int registroHerramienta, cantidadHerramienta, costoUnitarioHerramienta;
-    string nombreHerramienta;
-    
-	
-	if(Lec.is_open()){
-		Lec>>registroHerramienta;
-		while(!Lec.eof()){
-        	Lec>>nombreHerramienta;
-        	Lec>>cantidadHerramienta;
-        	Lec>>costoUnitarioHerramienta;
-        	
-        	if(registroHerramienta>1000000){
-        		nuevoArchivo<<registroHerramienta;
-        		nuevoArchivo<<nombreHerramienta;
-        		nuevoArchivo<<cantidadHerramienta;
-        		nuevoArchivo<<costoUnitarioHerramienta;
-			}
-        	
-        }
-
+void generarArchivo (Herramienta herramientas[100], int tam){
+   
+   ofstream nuevoArchivo("sal.txt", ios::out);
+   
+	for(int i = 0; i < tam; i++){
+		if(herramientas[i].costoUnitario > 1000000){
+			nuevoArchivo<<herramientas[i].numeroRegistro<< " ";
+			nuevoArchivo<<herramientas[i].nombreHerramienta<< " ";
+    		nuevoArchivo<<herramientas[i].cantidad<< " ";
+    		nuevoArchivo<<herramientas[i].costoUnitario<< " "<<endl;
+    		
+		}
 	}
-	
-	else{
-		cout<<"Error al abrir el archivo"<<endl;
-	}
-	
+	nuevoArchivo.close();
 
 }
-
-
-
-
