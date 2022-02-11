@@ -1,46 +1,12 @@
-17
-Lijadora_Eléctrica
-7
-130000
-3
-Martillo
-76
-35000
-56
-Serrucho
-21
-38000
-39
-Podadora
-3
-230000
-24
-Sierra
-18
-310000
-68
-Destornillador
-106
-8000
-83
-Mazo
-11
-12000
-77
-Llave_Inglesa
-34
-15000
-1
-Caladora 
-50
-1100000
-11
-Escopleadora
-30
-2000000
+17 Lijadora_Eléctrica 7 130000
+3 Martillo 76 35000
+56 Serrucho 21 38000
+39 Podadora 3 230000
+24 Sierra 18 310000
+68 Destornillador 106 8000
+83 Mazo 11 12000
+77 Llave_Inglesa 34 15000
+33 a 3 1000
+56 herramienta1m 23 1100000
 
-
-89
-Tornillo
-50
-100
+23 herramineta2m 34 20000000
